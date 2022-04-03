@@ -1,8 +1,30 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import { mountComponents } from 'react-sinatra-ujs';
+import { mountComponents } from 'react-sinatra-ujs'
 
-import CommentBox from './components/CommentBox';
+class CommentBox extends React.Component {
+  handleClick() {
+    console.log('this is:', this)
+  }
 
-addEventListener('load', function() { mountComponents({ CommentBox: CommentBox }) }, false);
+  render() {
+    console.log('rendering')
+    return (
+      <div className="commentBox" onClick={(e) => this.handleClick(e)}>
+        Hello, {this.props.name}! I am a CommentBox.
+      </div>
+    )
+  }
+}
+CommentBox.propTypes = {
+  name: PropTypes.string
+}
+
+addEventListener(
+  'load',
+  function () {
+    mountComponents({ CommentBox: CommentBox })
+  },
+  false
+)

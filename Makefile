@@ -2,8 +2,13 @@ CLIENT_SOURCE_FILES=$(shell find client -iregex '.*\.[tj]sx?')
 PUBLIC_BUNDLE=./public/bundle.js
 
 .PHONY: up
-up: client server
+up: lint client server
 	bundle exec ruby ./server/main.rb
+
+.PHONY: lint
+lint:
+	npx eslint client
+	rubocop server
 
 .PHONY: client
 client: node_modules $(PUBLIC_BUNDLE)

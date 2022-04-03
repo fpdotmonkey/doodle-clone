@@ -7,21 +7,29 @@
   "description": "Vote for when you and your friends or classmates should meet",
   "homepage": "",
   "scripts": {
-    "build": "webpack --config ./webpack.config.js",
+    "build": "webpack --config ./webpack.config.js"
   },
   "dependencies": {
     "react": "^15.4.0",
     "react-dom": "^15.4.0"
   },
   "devDependencies": {
-    "react-sinatra-ujs": "^1.0.1",
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
     "babel-polyfill": "^6.16.0",
     "babel-preset-latest": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.16.0",
-    "webpack": "^2.0.0",
-    "expose-loader": "^0.7.1"
+    "eslint": "^7.32.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.2.0",
+    "eslint-plugin-react": "^7.29.4",
+    "expose-loader": "^0.7.1",
+    "prettier": "^2.6.2",
+    "prop-types": "^15.8.1",
+    "react-sinatra-ujs": "^1.0.1",
+    "webpack": "^2.0.0"
   }
 }
