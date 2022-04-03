@@ -1,0 +1,133 @@
+GIT
+  remote: git@github.com:namusyaka/react-sinatra.git
+  revision: dd914505b531509eee4fc02e833abe609186a4be
+  specs:
+    react-sinatra (0.1.1)
+      activesupport
+      connection_pool
+      padrino-helpers
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activesupport (7.0.2.3)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+    addressable (2.8.0)
+      public_suffix (>= 2.0.2, < 5.0)
+    ast (2.4.2)
+    concurrent-ruby (1.1.10)
+    connection_pool (2.2.5)
+    diff-lcs (1.5.0)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
+    execjs (2.8.1)
+    ffi (1.15.5)
+    ffi-compiler (1.0.1)
+      ffi (>= 1.0.0)
+      rake
+    haml (5.2.2)
+      temple (>= 0.8.0)
+      tilt
+    http (5.0.4)
+      addressable (~> 2.8)
+      http-cookie (~> 1.0)
+      http-form_data (~> 2.2)
+      llhttp-ffi (~> 0.4.0)
+    http-cookie (1.0.4)
+      domain_name (~> 0.5)
+    http-form_data (2.3.0)
+    i18n (1.10.0)
+      concurrent-ruby (~> 1.0)
+    libv8-node (16.10.0.0-x86_64-linux)
+    llhttp-ffi (0.4.0)
+      ffi-compiler (~> 1.0)
+      rake (~> 13.0)
+    mini_racer (0.6.2)
+      libv8-node (~> 16.10.0.0)
+    minitest (5.15.0)
+    multi_json (1.15.0)
+    mustermann (1.1.1)
+      ruby2_keywords (~> 0.0.1)
+    padrino-helpers (0.15.1)
+      i18n (>= 0.6.7, < 2)
+      padrino-support (= 0.15.1)
+      tilt (>= 1.4.1, < 3)
+    padrino-support (0.15.1)
+    parallel (1.22.1)
+    parser (3.1.1.0)
+      ast (~> 2.4.1)
+    public_suffix (4.0.6)
+    rack (2.2.3)
+    rack-protection (2.2.0)
+      rack
+    rainbow (3.1.1)
+    rake (13.0.6)
+    regexp_parser (2.2.1)
+    rexml (3.2.5)
+    rspec (3.11.0)
+      rspec-core (~> 3.11.0)
+      rspec-expectations (~> 3.11.0)
+      rspec-mocks (~> 3.11.0)
+    rspec-core (3.11.0)
+      rspec-support (~> 3.11.0)
+    rspec-expectations (3.11.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.11.0)
+    rspec-mocks (3.11.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.11.0)
+    rspec-support (3.11.0)
+    rubocop (1.26.1)
+      parallel (~> 1.10)
+      parser (>= 3.1.0.0)
+      rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml
+      rubocop-ast (>= 1.16.0, < 2.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.16.0)
+      parser (>= 3.1.1.0)
+    ruby-progressbar (1.11.0)
+    ruby2_keywords (0.0.5)
+    sinatra (2.2.0)
+      mustermann (~> 1.0)
+      rack (~> 2.2)
+      rack-protection (= 2.2.0)
+      tilt (~> 2.0)
+    sinatra-contrib (2.2.0)
+      multi_json
+      mustermann (~> 1.0)
+      rack-protection (= 2.2.0)
+      sinatra (= 2.2.0)
+      tilt (~> 2.0)
+    temple (0.8.2)
+    tilt (2.0.10)
+    tzinfo (2.0.4)
+      concurrent-ruby (~> 1.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.8.1)
+    unicode-display_width (2.1.0)
+    webrick (1.7.0)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  execjs
+  haml
+  http
+  mini_racer
+  react-sinatra!
+  rspec
+  rubocop
+  sinatra
+  sinatra-contrib
+  webrick
+
+BUNDLED WITH
+   2.2.3
