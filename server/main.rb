@@ -24,5 +24,5 @@ get '/' do
 end
 
 get '/react-component' do
-  haml :'react-component', layout: true
+  haml react_component('Doodle', {}), layout: true
 end

@@ -7,7 +7,8 @@
   "description": "Vote for when you and your friends or classmates should meet",
   "homepage": "",
   "scripts": {
-    "build": "webpack --config ./webpack.config.js"
+    "build": "webpack --config ./webpack.config.js",
+    "watch": "webpack --watch --debug --devtool eval-cheap-module-source-map --config ./webpack.config.js"
   },
   "dependencies": {
     "react": "^15.4.0",

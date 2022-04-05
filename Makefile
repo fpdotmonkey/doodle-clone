@@ -20,6 +20,10 @@ $(PUBLIC_BUNDLE): package-lock.json $(CLIENT_SOURCE_FILES)
 node_modules:
 	npm install
 
+.PHONY: watch
+watch:
+	npm run watch
+
 .PHONY: server
 server:
 	bundle install

@@ -8,16 +8,16 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'public'),
     filename: 'bundle.js',
-    publicPath: '/public/',
+    publicPath: '/public/'
   },
   module: {
     rules: [
       {
         test: /\.js$/,
-        loader: 'babel-loader',
+        loader: 'babel-loader?retainLines=true',
         include: path.join(__dirname, 'client/source'),
-        exclude: path.join(__dirname, 'node_modules'),
-      },
-    ],
-  },
+        exclude: path.join(__dirname, 'node_modules')
+      }
+    ]
+  }
 }
