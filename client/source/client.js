@@ -346,7 +346,7 @@ class DayLabels extends React.Component {
             height: 'min-content'
           }}
           key={dayAbbreviation}>
-          <h2>{dayAbbreviation}</h2>
+          <h2 style={{ margin: 0 }}>{dayAbbreviation}</h2>
         </div>
       )
     })
@@ -407,8 +407,10 @@ class Week extends React.Component {
           width: 750,
           flexDirection: 'column'
         })}>
+        <div style={{ flex: '1 1 0' }} />
         <DayLabels />
         {times}
+        <div style={{ flex: '1 1 0' }} />
       </div>
     )
   }
