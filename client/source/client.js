@@ -108,6 +108,8 @@ class Doodle extends React.Component {
           selectionTool={this.state.selectionTool}
           calendarData={this.state.data}
           calendarDataChange={(data) => this.handleNewCalendarData(data)}
+          voteResult={this.state.voteResult}
+          showVoteResult={this.state.showVoteResult}
         />
       </main>
     )

@@ -88,6 +88,40 @@ AMomentInTime.propTypes = {
   style: PropTypes.object.isRequired
 }
 
+function availableTimesBackgroundColor(
+  selectionTool,
+  minutesIntoTheWeek,
+  availableTimes,
+  candidateTimes
+) {
+  if (in2dTimeRange(minutesIntoTheWeek, candidateTimes)) {
+    if (selectionTool === SelectionTool.Unavailable) {
+      return 'IndianRed'
+    } else if (selectionTool === SelectionTool.Maybe) {
+      return 'LemonChiffon'
+    }
+    return 'PaleGreen'
+  } else if (availableTimes.available().includes(minutesIntoTheWeek)) {
+    return 'DarkGreen'
+  } else if (availableTimes.maybe().includes(minutesIntoTheWeek)) {
+    return 'NavajoWhite'
+  }
+  return 'transparent'
+}
+
+function voteResultBackgroundColor(voteResult, minutesIntoTheWeek) {
+  let backgroundColor = ''
+  const key = minutesIntoTheWeek.toString()
+  if (key in voteResult.availableTimes) {
+    if (voteResult.availableTimes[key] === voteResult.quantity) {
+      return 'DarkGreen'
+    } else if (voteResult.availableTimes[key] > 1) {
+      return 'MediumSeaGreen'
+    }
+  }
+  return 'transparent'
+}
+
 class TimeOfDay extends React.Component {
   render() {
     const minutesPerDay = 1440
@@ -96,23 +130,19 @@ class TimeOfDay extends React.Component {
     for (let day = 0; day < daysPerWeek; ++day) {
       const minutesIntoTheWeek =
         this.props.minutesSinceMidnight + day * minutesPerDay
-      let backgroundColor = 'transparent'
-      if (in2dTimeRange(minutesIntoTheWeek, this.props.candidateTimes)) {
-        if (this.props.selectionTool === SelectionTool.Unavailable) {
-          backgroundColor = 'IndianRed'
-        } else if (this.props.selectionTool === SelectionTool.Maybe) {
-          backgroundColor = 'LemonChiffon'
-        } else {
-          backgroundColor = 'PaleGreen'
-        }
-      } else if (
-        this.props.availableTimes.available().includes(minutesIntoTheWeek)
-      ) {
-        backgroundColor = 'green'
-      } else if (
-        this.props.availableTimes.maybe().includes(minutesIntoTheWeek)
-      ) {
-        backgroundColor = 'NavajoWhite'
+      let backgroundColor = ''
+      if (!this.props.showVoteResult) {
+        backgroundColor = availableTimesBackgroundColor(
+          this.props.selectionTool,
+          minutesIntoTheWeek,
+          this.props.availableTimes,
+          this.props.candidateTimes
+        )
+      } else {
+        backgroundColor = voteResultBackgroundColor(
+          this.props.voteResult,
+          minutesIntoTheWeek
+        )
       }
       days.push(
         <AMomentInTime
@@ -159,6 +189,8 @@ TimeOfDay.propTypes = {
   onDrop: PropTypes.func.isRequired,
   minutesSinceMidnight: PropTypes.number.isRequired,
   availableTimes: PropTypes.object.isRequired,
+  voteResult: PropTypes.object.isRequired,
+  showVoteResult: PropTypes.bool.isRequired,
   candidateTimes: PropTypes.array.isRequired,
   selectionTool: PropTypes.number.isRequired
 }
@@ -216,6 +248,8 @@ class Week extends React.Component {
           availableTimes={this.props.availableTimes.withSameTimeOfDayAs(
             minutesSinceMidnight
           )}
+          voteResult={this.props.voteResult}
+          showVoteResult={this.props.showVoteResult}
           candidateTimes={this.props.candidateTimes}
           selectionTool={this.props.selectionTool}
           key={minutesSinceMidnight}
@@ -252,6 +286,8 @@ class Week extends React.Component {
 Week.propTypes = {
   timeInterval: PropTypes.number.isRequired,
   availableTimes: PropTypes.object.isRequired,
+  voteResult: PropTypes.object.isRequired,
+  showVoteResult: PropTypes.bool.isRequired,
   candidateTimes: PropTypes.array.isRequired,
   selectionTool: PropTypes.number.isRequired,
   onClick: PropTypes.func.isRequired,
@@ -284,6 +320,10 @@ export class Calendar extends React.Component {
   }
 
   handleClick(minutesSinceMidnight) {
+    if (this.props.showVoteResult) {
+      return
+    }
+
     if (this.props.selectionTool === SelectionTool.Available) {
       this.addAvailableTimes([minutesSinceMidnight])
     } else if (this.props.selectionTool === SelectionTool.Maybe) {
@@ -294,18 +334,30 @@ export class Calendar extends React.Component {
   }
 
   handleDragStart(minutesSinceMidnight) {
+    if (this.props.showVoteResult) {
+      return
+    }
+
     this.setState({
       candidateTimes: [minutesSinceMidnight, minutesSinceMidnight]
     })
   }
 
   handleDragOver(minutesSinceMidnight) {
+    if (this.props.showVoteResult) {
+      return
+    }
+
     const candidateTimes = this.state.candidateTimes
     candidateTimes[1] = minutesSinceMidnight
     this.setState({ candidateTimes: candidateTimes })
   }
 
   handleDragDrop() {
+    if (this.props.showVoteResult) {
+      return
+    }
+
     const minutesPerDay = 1440
     const dayBounds = this.state.candidateTimes
       .slice()
@@ -349,6 +401,8 @@ export class Calendar extends React.Component {
         }
         onDrop={() => this.handleDragDrop()}
         availableTimes={this.props.calendarData}
+        voteResult={this.props.voteResult}
+        showVoteResult={this.props.showVoteResult}
         candidateTimes={this.state.candidateTimes}
         selectionTool={this.props.selectionTool}
         style={this.props.style}
@@ -360,5 +414,7 @@ Calendar.propTypes = {
   selectionTool: PropTypes.number.isRequired,
   calendarData: PropTypes.object.isRequired,
   calendarDataChange: PropTypes.func.isRequired,
+  voteResult: PropTypes.object.isRequired,
+  showVoteResult: PropTypes.bool.isRequired,
   style: PropTypes.object.isRequired
 }
