@@ -4,6 +4,14 @@ export const SelectionTool = {
   Unavailable: 2
 }
 
+export class VoteResult {
+  constructor(result) {
+    this.maybeTimes = result.maybeTimes
+    this.quantity = result.quantity
+    this.availableTimes = result.availableTimes
+  }
+}
+
 export class AvailableTimes {
   constructor(availableTimes, maybeTimes, timeInterval) {
     this.availableTimes = availableTimes

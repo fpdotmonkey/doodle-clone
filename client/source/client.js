@@ -4,7 +4,12 @@ import PropTypes from 'prop-types'
 import { mountComponents } from 'react-sinatra-ujs'
 
 import { VoteButton } from './vote_button'
-import { DoodleMetadata, AvailableTimes, SelectionTool } from './common'
+import {
+  DoodleMetadata,
+  AvailableTimes,
+  SelectionTool,
+  VoteResult
+} from './common'
 import { Metadata } from './metadata'
 import { Calendar } from './calendar'
 import { Controls } from './controls'
@@ -15,7 +20,9 @@ class Doodle extends React.Component {
     this.state = {
       selectionTool: SelectionTool.Available,
       metadata: new DoodleMetadata({}),
-      data: new AvailableTimes([], [], 30)
+      data: new AvailableTimes([], [], 30),
+      showVoteResult: false,
+      voteResult: new VoteResult({})
     }
     this.getDoodleData(this.props.id)
   }
@@ -35,6 +42,13 @@ class Doodle extends React.Component {
   postDoodleData(id, metadata, data) {
     const packet = { metadata: metadata, data: data }
     const doodleDataUpdate = new XMLHttpRequest()
+    doodleDataUpdate.addEventListener('load', () => {
+      console.log(doodleDataUpdate.response.data)
+      this.setState({
+        metadata: new DoodleMetadata(doodleDataUpdate.response.metadata),
+        voteResult: new VoteResult(doodleDataUpdate.response.data)
+      })
+    })
     doodleDataUpdate.open('POST', `/api/data/${id}`)
     doodleDataUpdate.setRequestHeader('Content-Type', 'text/json')
     doodleDataUpdate.responseType = 'json'
@@ -53,6 +67,7 @@ class Doodle extends React.Component {
 
   vote() {
     this.postDoodleData(this.props.id, this.state.metadata, this.state.data)
+    this.setState({ showVoteResult: true })
   }
 
   useSelectionTool(tool) {

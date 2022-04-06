@@ -56,12 +56,14 @@ post '/api/data/:id' do |id|
   request.body.rewind
   data = JSON.parse(request.body.read)
   db[id][:metadata] = data['metadata']
-  unless data['data'].empty?
-    vote = Vote.new(data['data'])
-    db[id][:data].cast(vote)
-  end
+
+  vote = Vote.new(data['data'])
+  db[id][:data].cast(vote)
+  vote_result = {
+    metadata: db[id][:metadata], data: db[id][:data].result
+  }.to_json
 
   status 200
   content_type :json
-  body db[id].to_json
+  body vote_result
 end

@@ -6,8 +6,8 @@ require 'json'
 # A single vote for a set of available times or maybe-available times
 class Vote
   def initialize(vote)
-    @available = Set.new(vote[:availableTimes])
-    @maybe = Set.new(vote[:maybeTimes])
+    @available = Set.new(vote['availableTimes'])
+    @maybe = Set.new(vote['maybeTimes'])
   end
 
   def available
@@ -48,9 +48,9 @@ class VoteTally
 
   def result
     {
-      availableTimes: @available,
-      maybeTimes: @maybe.to_a,
-      quantity: @quantity
+      'availableTimes' => @available,
+      'maybeTimes' => @maybe.to_a,
+      'quantity' => @quantity
     }
   end
 end
