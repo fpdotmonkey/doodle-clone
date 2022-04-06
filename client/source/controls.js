@@ -82,7 +82,10 @@ export class Controls extends React.Component {
         style={Object.assign({}, this.props.style, {
           display: 'flex',
           flexDirection: 'column',
-          gap: 10
+          gap: 10,
+          background: 'white',
+          margin: 10,
+          border: 'solid'
         })}>
         <div
           style={{

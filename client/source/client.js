@@ -81,7 +81,11 @@ class Doodle extends React.Component {
           position: 'absolute',
           inset: 0,
           display: 'flex',
-          flexDirection: 'row'
+          flexDirection: 'row',
+          justifyContent: 'center',
+          background:
+            'radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,214,212,1) 100%)',
+          fontFamily: 'sans'
         }}>
         <aside
           style={{
@@ -102,7 +106,6 @@ class Doodle extends React.Component {
             selectionToolChange={(tool) => this.useSelectionTool(tool)}
           />
         </aside>
-        <div style={{ width: 10 }} />
         <Calendar
           style={{ flex: '1 1 auto' }}
           selectionTool={this.state.selectionTool}

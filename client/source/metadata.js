@@ -17,8 +17,9 @@ export class Metadata extends React.Component {
     return (
       <div
         style={Object.assign({}, this.props.style, {
-          borderBottom: 'solid',
-          borderRight: 'solid'
+          border: 'solid',
+          margin: 10,
+          background: 'white'
         })}>
         <div
           style={{

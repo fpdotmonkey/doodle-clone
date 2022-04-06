@@ -53,7 +53,7 @@ function AMomentInTime(props) {
       id={props.minutesIntoTheWeek}
       style={Object.assign({}, props.style, {
         flex: '1 1 auto',
-        borderLeft: 'solid',
+        borderLeft: '2px solid',
         borderBottom: 'solid thin',
         cursor: 'crosshair'
       })}
@@ -110,10 +110,13 @@ function availableTimesBackgroundColor(
 }
 
 function voteResultBackgroundColor(voteResult, minutesIntoTheWeek) {
-  let backgroundColor = ''
   const key = minutesIntoTheWeek.toString()
+  console.log(minutesIntoTheWeek, voteResult.availableTimes)
   if (key in voteResult.availableTimes) {
-    if (voteResult.availableTimes[key] === voteResult.quantity) {
+    if (
+      voteResult.availableTimes[key] === voteResult.quantity &&
+      !voteResult.maybeTimes.includes(minutesIntoTheWeek)
+    ) {
       return 'DarkGreen'
     } else if (voteResult.availableTimes[key] > 1) {
       return 'MediumSeaGreen'
@@ -161,7 +164,7 @@ class TimeOfDay extends React.Component {
     return (
       <div
         style={Object.assign({}, this.props.style, {
-          borderRight: 'solid',
+          borderRight: '2px solid',
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'center'
@@ -170,7 +173,7 @@ class TimeOfDay extends React.Component {
           style={{
             display: 'flex',
             justifyContent: 'right',
-            borderBottom: 'solid'
+            borderBottom: '2px solid'
           }}>
           <p style={{ margin: 0, width: 50, fontSize: 13 }}>
             {timeFrom(this.props.minutesSinceMidnight)}
@@ -204,8 +207,8 @@ class DayLabels extends React.Component {
         <div
           style={{
             flex: '1 1 0',
-            borderLeft: 'solid',
-            borderBottom: 'solid',
+            borderLeft: '2px solid',
+            borderBottom: '2px solid',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -219,11 +222,11 @@ class DayLabels extends React.Component {
     return (
       <div
         style={Object.assign({}, this.props.style, {
-          borderRight: 'solid',
+          borderRight: '2px solid',
           display: 'flex',
           flexDirection: 'row'
         })}>
-        <div style={{ width: 50, borderBottom: 'solid' }} />
+        <div style={{ width: 50, borderBottom: '2px solid' }} />
         {dayLabels}
       </div>
     )
@@ -273,12 +276,11 @@ class Week extends React.Component {
           display: 'flex',
           flex: '0 1 auto',
           width: 750,
-          flexDirection: 'column'
+          flexDirection: 'column',
+          padding: 10
         })}>
-        <div style={{ flex: '1 1 0' }} />
         <DayLabels />
         {times}
-        <div style={{ flex: '1 1 0' }} />
       </div>
     )
   }
@@ -405,7 +407,11 @@ export class Calendar extends React.Component {
         showVoteResult={this.props.showVoteResult}
         candidateTimes={this.state.candidateTimes}
         selectionTool={this.props.selectionTool}
-        style={this.props.style}
+        style={Object.assign({}, this.props.style, {
+          background: 'white',
+          alignSelf: 'center',
+          margin: '10px'
+        })}
       />
     )
   }
