@@ -53,6 +53,17 @@ function in2dTimeRange(candidateTime, timeRange) {
 }
 
 class Metadata extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      eventName: this.props.metadata.eventName
+    }
+  }
+
+  handleMetadataChange(metadataKey, event) {
+    this.props.metadataChange({ [metadataKey]: event.target.value })
+  }
+
   render() {
     return (
       <div
@@ -60,23 +71,58 @@ class Metadata extends React.Component {
           borderBottom: 'solid',
           borderRight: 'solid'
         })}>
-        <h1>
-          When should <br />
-          {this.props.eventName}
-          <br /> be held?
-        </h1>
-        <p>{this.props.description}</p>
-        <p>{this.props.location}</p>
-        <p>{this.props.duration}</p>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 10,
+            margin: 10
+          }}>
+          <h1>
+            When should <br />
+            <input
+              onFocus={(event) => (event.target.style.color = 'black')}
+              onBlur={(event) => this.handleMetadataChange('eventName', event)}
+              type="text"
+              placeholder={this.props.metadata.eventName}
+              style={{
+                color: this.props.metadata.default ? 'gray' : 'black',
+                fontSize: 24,
+                display: 'inline-block'
+              }}
+              size={9}
+            />
+            <br /> be held?
+          </h1>
+          <textarea
+            onFocus={(event) => (event.target.style.color = 'black')}
+            onBlur={(event) => this.handleMetadataChange('description', event)}
+            type="text"
+            placeholder={this.props.metadata.description}
+            style={{ color: this.props.metadata.default ? 'gray' : 'black' }}
+          />
+          <input
+            onFocus={(event) => (event.target.style.color = 'black')}
+            onBlur={(event) => this.handleMetadataChange('location', event)}
+            type="text"
+            placeholder={this.props.metadata.location}
+            style={{ color: this.props.metadata.default ? 'gray' : 'black' }}
+          />
+          <input
+            onFocus={(event) => (event.target.style.color = 'black')}
+            onBlur={(event) => this.handleMetadataChange('duration', event)}
+            type="text"
+            placeholder={this.props.metadata.duration}
+            style={{ color: this.props.metadata.default ? 'gray' : 'black' }}
+          />
+        </div>
       </div>
     )
   }
 }
 Metadata.propTypes = {
-  eventName: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  location: PropTypes.string.isRequired,
-  duration: PropTypes.string.isRequired,
+  metadata: PropTypes.object.isRequired,
+  metadataChange: PropTypes.func.isRequired,
   style: PropTypes.object
 }
 
@@ -191,16 +237,6 @@ class Controls extends React.Component {
             onClick={() => this.handleOptionChange(SelectionTool.Unavailable)}
           />
         </div>
-        <br />
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center'
-          }}>
-          <button>
-            <h1>Vote</h1>
-          </button>
-        </div>
         <div style={{ height: 20 }} />
       </div>
     )
@@ -209,6 +245,27 @@ class Controls extends React.Component {
 Controls.propTypes = {
   selectionTool: PropTypes.number.isRequired,
   selectionToolChange: PropTypes.func.isRequired,
+  style: PropTypes.object
+}
+
+function VoteButton(props) {
+  return (
+    <div
+      style={Object.assign({}, props.style, {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      })}>
+      <div>
+        <button onClick={() => props.onVote()}>
+          <h1>Vote</h1>
+        </button>
+      </div>
+    </div>
+  )
+}
+VoteButton.propTypes = {
+  onVote: PropTypes.func.isRequired,
   style: PropTypes.object
 }
 
@@ -428,9 +485,10 @@ Week.propTypes = {
 }
 
 class AvailableTimes {
-  constructor(availableTimes, maybeTimes) {
+  constructor(availableTimes, maybeTimes, timeInterval) {
     this.availableTimes = availableTimes
     this.maybeTimes = maybeTimes
+    this.timeInterval = timeInterval
   }
 
   addAvailableTimes(times) {
@@ -441,7 +499,7 @@ class AvailableTimes {
     const maybeTimes = this.maybeTimes
       .slice()
       .filter((time) => !availableTimes.includes(time))
-    return new AvailableTimes(availableTimes, maybeTimes)
+    return new AvailableTimes(availableTimes, maybeTimes, this.timeInterval)
   }
 
   addMaybeTimes(times) {
@@ -452,7 +510,7 @@ class AvailableTimes {
     const availableTimes = this.availableTimes
       .slice()
       .filter((time) => !maybeTimes.includes(time))
-    return new AvailableTimes(availableTimes, maybeTimes)
+    return new AvailableTimes(availableTimes, maybeTimes, this.timeInterval)
   }
 
   removeTimes(times) {
@@ -462,14 +520,14 @@ class AvailableTimes {
     const maybeTimes = this.maybeTimes
       .slice()
       .filter((time) => !times.includes(time))
-    return new AvailableTimes(availableTimes, maybeTimes)
+    return new AvailableTimes(availableTimes, maybeTimes, this.timeInterval)
   }
 
-  available(times) {
+  available() {
     return this.availableTimes
   }
 
-  maybe(times) {
+  maybe() {
     return this.maybeTimes
   }
 
@@ -477,11 +535,11 @@ class AvailableTimes {
     const minutesPerDay = 1440
     const availableTimes = this.availableTimes
       .slice()
-      .filter((_time) => _time % minutesPerDay === time % minutesPerDay)
+      .filter((oldTime) => oldTime % minutesPerDay === time % minutesPerDay)
     const maybeTimes = this.maybeTimes
       .slice()
-      .filter((_time) => _time % minutesPerDay === time % minutesPerDay)
-    return new AvailableTimes(availableTimes, maybeTimes)
+      .filter((oldTime) => oldTime % minutesPerDay === time % minutesPerDay)
+    return new AvailableTimes(availableTimes, maybeTimes, this.timeInterval)
   }
 }
 
@@ -489,28 +547,22 @@ class Calendar extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      timeInterval: 30, // minutes
-      availableTimes: new AvailableTimes([], []),
       candidateTimes: [-1, -1]
     }
   }
 
   addAvailableTimes(times) {
-    this.setState({
-      availableTimes: this.state.availableTimes.addAvailableTimes(times)
-    })
+    this.props.calendarDataChange(
+      this.props.calendarData.addAvailableTimes(times)
+    )
   }
 
   addMaybeTimes(times) {
-    this.setState({
-      availableTimes: this.state.availableTimes.addMaybeTimes(times)
-    })
+    this.props.calendarDataChange(this.props.calendarData.addMaybeTimes(times))
   }
 
   removeTimes(times) {
-    this.setState({
-      availableTimes: this.state.availableTimes.removeTimes(times)
-    })
+    this.props.calendarDataChange(this.props.calendarData.removeTimes(times))
   }
 
   handleClick(minutesSinceMidnight) {
@@ -551,7 +603,7 @@ class Calendar extends React.Component {
       for (
         let timeOfDay = timeOfDayBounds[0];
         timeOfDay <= timeOfDayBounds[1];
-        timeOfDay += this.state.timeInterval
+        timeOfDay += this.props.calendarData.timeInterval
       ) {
         times.push(day * minutesPerDay + timeOfDay)
       }
@@ -569,7 +621,7 @@ class Calendar extends React.Component {
   render() {
     return (
       <Week
-        timeInterval={this.state.timeInterval}
+        timeInterval={this.props.calendarData.timeInterval}
         onClick={(minutesIntoTheWeek) => this.handleClick(minutesIntoTheWeek)}
         onDragStart={(minutesIntoTheWeek) =>
           this.handleDragStart(minutesIntoTheWeek)
@@ -578,8 +630,7 @@ class Calendar extends React.Component {
           this.handleDragOver(minutesIntoTheWeek)
         }
         onDrop={() => this.handleDragDrop()}
-        availableTimes={this.state.availableTimes}
-        maybeTimes={this.state.maybeTimes}
+        availableTimes={this.props.calendarData}
         candidateTimes={this.state.candidateTimes}
         selectionTool={this.props.selectionTool}
         style={this.props.style}
@@ -589,15 +640,102 @@ class Calendar extends React.Component {
 }
 Calendar.propTypes = {
   selectionTool: PropTypes.number.isRequired,
+  calendarData: PropTypes.object.isRequired,
+  calendarDataChange: PropTypes.func.isRequired,
   style: PropTypes.object.isRequired
+}
+
+class DoodleMetadata {
+  constructor(metadata) {
+    this.eventName =
+      typeof metadata.eventName !== 'undefined' ? metadata.eventName : ''
+    this.description =
+      typeof metadata.description !== 'undefined' ? metadata.description : ''
+    this.location =
+      typeof metadata.location !== 'undefined' ? metadata.location : ''
+    this.duration =
+      typeof metadata.duration !== 'undefined' ? metadata.duration : ''
+    this.default =
+      typeof metadata.default !== 'undefined' ? metadata.default : true
+  }
+
+  eventName() {
+    return this.eventName
+  }
+
+  description() {
+    return this.description
+  }
+
+  location() {
+    return this.location
+  }
+
+  duration() {
+    return this.duration
+  }
+
+  update(newMetadata) {
+    const metadata = {
+      eventName: this.eventName,
+      description: this.description,
+      location: this.location,
+      duration: this.duration,
+      default: this.default
+    }
+
+    Object.entries(newMetadata)
+      .filter(([key, _]) => key in metadata)
+      .forEach(([key, value]) => (metadata[key] = value))
+    metadata.default = false
+    return new DoodleMetadata(metadata)
+  }
 }
 
 class Doodle extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selectionTool: SelectionTool.Available
+      selectionTool: SelectionTool.Available,
+      metadata: new DoodleMetadata({}),
+      data: new AvailableTimes([], [], 30)
     }
+    this.getDoodleData(this.props.id)
+  }
+
+  getDoodleData(id) {
+    const doodleDataRequest = new XMLHttpRequest()
+    doodleDataRequest.addEventListener('load', () => {
+      this.setState({
+        metadata: new DoodleMetadata(doodleDataRequest.response.metadata)
+      })
+    })
+    doodleDataRequest.open('GET', `/api/data/${id}`)
+    doodleDataRequest.responseType = 'json'
+    doodleDataRequest.send()
+  }
+
+  postDoodleData(id, metadata, data) {
+    const packet = { metadata: metadata, data: data }
+    const doodleDataUpdate = new XMLHttpRequest()
+    doodleDataUpdate.open('POST', `/api/data/${id}`)
+    doodleDataUpdate.setRequestHeader('Content-Type', 'text/json')
+    doodleDataUpdate.responseType = 'json'
+    doodleDataUpdate.send(JSON.stringify(packet))
+  }
+
+  handleNewMetadata(newMetadata) {
+    const metadata = this.state.metadata.update(newMetadata)
+    this.setState({ metadata: metadata })
+    this.postDoodleData(this.props.id, metadata, {})
+  }
+
+  handleNewCalendarData(data) {
+    this.setState({ data: data })
+  }
+
+  vote() {
+    this.postDoodleData(this.props.id, this.state.metadata, this.state.data)
   }
 
   useSelectionTool(tool) {
@@ -619,13 +757,13 @@ class Doodle extends React.Component {
             flexDirection: 'column'
           }}>
           <Metadata
-            eventName="<event-name>"
-            description="<description>"
-            location="<location>"
-            duration="<duration>"
+            metadata={this.state.metadata}
+            metadataChange={(newMetadata) =>
+              this.handleNewMetadata(newMetadata)
+            }
             style={{ flex: '0 1 auto' }}
           />
-          <div style={{ flex: '1 1 auto' }} />
+          <VoteButton style={{ flex: '1 0 auto' }} onVote={() => this.vote()} />
           <Controls
             style={{ flex: '0 1 auto', alignSelf: 'flex-end' }}
             selectionTool={this.state.selectionTool}
@@ -636,10 +774,15 @@ class Doodle extends React.Component {
         <Calendar
           style={{ flex: '1 1 auto' }}
           selectionTool={this.state.selectionTool}
+          calendarData={this.state.data}
+          calendarDataChange={(data) => this.handleNewCalendarData(data)}
         />
       </main>
     )
   }
+}
+Doodle.propTypes = {
+  id: PropTypes.string.isRequired
 }
 
 addEventListener(

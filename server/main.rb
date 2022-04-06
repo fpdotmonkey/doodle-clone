@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
+require 'securerandom'
+
 Bundler.require
 
+require_relative './vote_tally'
+
 register React::Sinatra
+register Sinatra::Contrib
 
 configure do
   React::Sinatra.configure do |config|
@@ -19,10 +24,44 @@ end
 set :views, File.join(__dir__, 'views')
 set :public_folder, 'public'
 
+db = {}
+
 get '/' do
-  'this is an example for react-sinatra'
+  id = SecureRandom.uuid
+  db[id] = { metadata: { eventName: 'event name',
+                         description: 'description',
+                         location: 'location',
+                         duration: 'duration',
+                         default: true },
+             data: VoteTally.new }
+  redirect("/c/#{id}", 303)
 end
 
-get '/react-component' do
-  haml react_component('Doodle', {}), layout: true
+get '/c/:id' do |id|
+  not_found unless db.key?(id)
+  haml react_component('Doodle', { id: id }), layout: true
+end
+
+get '/api/data/:id' do |id|
+  not_found unless db.key?(id)
+
+  status 200
+  content_type :json
+  body db[id].to_json
+end
+
+post '/api/data/:id' do |id|
+  not_found unless db.key?(id)
+
+  request.body.rewind
+  data = JSON.parse(request.body.read)
+  db[id][:metadata] = data['metadata']
+  unless data['data'].empty?
+    vote = Vote.new(data['data'])
+    db[id][:data].cast(vote)
+  end
+
+  status 200
+  content_type :json
+  body db[id].to_json
 end

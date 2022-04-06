@@ -8,7 +8,11 @@ up: lint client server
 .PHONY: lint
 lint:
 	npx eslint client
-	rubocop server
+	bundle exec rubocop .
+
+.PHONY: check
+check: lint
+	bundle exec rspec $(shell find -name 'test_*.rb')
 
 .PHONY: client
 client: node_modules $(PUBLIC_BUNDLE)

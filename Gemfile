@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 gem 'rspec'
 gem 'rubocop'
+gem 'rubocop-rspec'
 
 gem 'react-sinatra', git: 'git@github.com:namusyaka/react-sinatra.git'
 gem 'sinatra'
