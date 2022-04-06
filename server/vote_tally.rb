@@ -47,6 +47,10 @@ class VoteTally
   end
 
   def result
-    @available.merge({ maybeTimes: @maybe.to_a, quantity: @quantity })
+    {
+      availableTimes: @available,
+      maybeTimes: @maybe.to_a,
+      quantity: @quantity
+    }
   end
 end

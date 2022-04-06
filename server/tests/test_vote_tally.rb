@@ -82,7 +82,7 @@ RSpec.describe VoteTally do
   it 'gives a result of an empty hash when no votes have been cast' do
     vote_tally = VoteTally.new
 
-    expect(vote_tally.result).to eq({ maybeTimes: [], quantity: 0 })
+    expect(vote_tally.result).to eq({ availableTimes: {}, maybeTimes: [], quantity: 0 })
   end
 
   it 'returns a mapping of minutes to votes as a result there are votes' do
@@ -91,25 +91,35 @@ RSpec.describe VoteTally do
     vote0 = Vote.new({ availableTimes: [1, 2, 3], maybeTimes: [] })
     vote_tally.cast(vote0)
     expect(vote_tally.result).to eq(
-      { '1': 1, '2': 1, '3': 1, maybeTimes: [], quantity: 1 }
+      {
+        availableTimes: { '1': 1, '2': 1, '3': 1 }, maybeTimes: [], quantity: 1
+      }
     )
 
     vote1 = Vote.new({ availableTimes: [1, 2, 3], maybeTimes: [] })
     vote_tally.cast(vote1)
     expect(vote_tally.result).to eq(
-      { '1': 2, '2': 2, '3': 2, maybeTimes: [], quantity: 2 }
+      {
+        availableTimes: { '1': 2, '2': 2, '3': 2 }, maybeTimes: [], quantity: 2
+      }
     )
 
     vote2 = Vote.new({ availableTimes: [1, 2], maybeTimes: [] })
     vote_tally.cast(vote2)
     expect(vote_tally.result).to eq(
-      { '1': 3, '2': 3, '3': 2, maybeTimes: [], quantity: 3 }
+      {
+        availableTimes: { '1': 3, '2': 3, '3': 2 }, maybeTimes: [], quantity: 3
+      }
     )
 
     vote3 = Vote.new({ availableTimes: [4, 5, 6], maybeTimes: [] })
     vote_tally.cast(vote3)
     expect(vote_tally.result).to eq(
-      { '1': 3, '2': 3, '3': 2, '4': 1, '5': 1, '6': 1, maybeTimes: [], quantity: 4 }
+      {
+        availableTimes: { '1': 3, '2': 3, '3': 2, '4': 1, '5': 1, '6': 1 },
+        maybeTimes: [],
+        quantity: 4
+      }
     )
   end
 
@@ -119,26 +129,35 @@ RSpec.describe VoteTally do
     vote0 = Vote.new({ availableTimes: [1, 2, 3], maybeTimes: [] })
     vote_tally.cast(vote0)
     expect(vote_tally.result).to eq(
-      { '1': 1, '2': 1, '3': 1, maybeTimes: [], quantity: 1 }
+      {
+        availableTimes: { '1': 1, '2': 1, '3': 1 }, maybeTimes: [], quantity: 1
+      }
     )
 
     vote1 = Vote.new({ availableTimes: [], maybeTimes: [1, 2, 3] })
     vote_tally.cast(vote1)
     expect(vote_tally.result).to eq(
-      { '1': 2, '2': 2, '3': 2, maybeTimes: [1, 2, 3], quantity: 2 }
+      {
+        availableTimes: { '1': 2, '2': 2, '3': 2 }, maybeTimes: [1, 2, 3],
+        quantity: 2
+      }
     )
 
     vote2 = Vote.new({ availableTimes: [], maybeTimes: [1, 2, 3] })
     vote_tally.cast(vote2)
     expect(vote_tally.result).to eq(
-      { '1': 3, '2': 3, '3': 3, maybeTimes: [1, 2, 3], quantity: 3 }
+      {
+        availableTimes: { '1': 3, '2': 3, '3': 3 },
+        maybeTimes: [1, 2, 3],
+        quantity: 3
+      }
     )
 
     vote1 = Vote.new({ availableTimes: [1, 2, 4], maybeTimes: [3, 5, 6] })
     vote_tally.cast(vote1)
     expect(vote_tally.result).to eq(
       {
-        '1': 4, '2': 4, '3': 4, '4': 1, '5': 1, '6': 1,
+        availableTimes: { '1': 4, '2': 4, '3': 4, '4': 1, '5': 1, '6': 1 },
         maybeTimes: [1, 2, 3, 5, 6],
         quantity: 4
       }
